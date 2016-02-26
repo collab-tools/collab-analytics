@@ -1,0 +1,30 @@
+{
+  "name": "ls",
+  "version": "1.0.0",
+  "description": "Analytics library for logging / data pulling in Collab.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://hooitong@github.com/collab-tools/collab-analytics.git"
+  },
+  "keywords": [
+    "collab",
+    "analytics",
+    "logging"
+  ],
+  "author": "Yeap Hooi Tong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/collab-tools/collab-analytics/issues"
+  },
+  "homepage": "https://github.com/collab-tools/collab-analytics#readme",
+  "dependencies": {
+    "bluebird": "^3.3.3",
+    "mysql": "^2.10.2",
+    "sequelize": "^3.19.3",
+    "underscore": "^1.8.3"
+  }
+}
