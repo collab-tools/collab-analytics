@@ -1,3 +1,5 @@
+import {CommitLog, IssueLog} from '../models'
+
 /**
  * Pulls commit entries from GitHub and update local logging
  * database as per requirement.
@@ -24,7 +26,15 @@ export function pullIssues(repoUUID) {
  * @return {object}            boolean status and error message if any
  */
 export function logNewCommit(commitData) {
-
+  return CommitLog.create({
+    loc: commitData.changes,
+    date: commitData.date,
+    user_id: commitData.userID,
+    project_id: commitData.projectID
+  }).then(function(revision, error) {
+    if(error) return {status: false, message: error}
+    else return {status: true, message: revision}
+  })
 }
 
 /**
@@ -33,7 +43,15 @@ export function logNewCommit(commitData) {
  * @return {object}           boolean status and error message if any
  */
 export function logNewIssue(issueData) {
-
+  return IssueLog.create({
+    activity: 0,
+    date: issueData.date,
+    user_id: issueData.userID,
+    project_id: issueData.projectID
+  }).then(function(revision, error) {
+    if(error) return {status: false, message: error}
+    else return {status: true, message: revision}
+  })
 }
 
 /**
@@ -42,5 +60,13 @@ export function logNewIssue(issueData) {
  * @return {object}           bollean status and error message if any
  */
 export function logCloseIssue(issueData) {
-
+  return IssueLog.create({
+    activity: 1,
+    date: issueData.date,
+    user_id: issueData.userID,
+    project_id: issueData.projectID
+  }).then(function(revision, error) {
+    if(error) return {status: false, message: error}
+    else return {status: true, message: revision}
+  })
 }

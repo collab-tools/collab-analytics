@@ -4,7 +4,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       primaryKey: true
     },
-    activity: DataTypes.INTEGER,
+    file_name: DataTypes.INTEGER,
     date: DataTypes.DATE,
     user_id: DataTypes.STRING,
     project_id: DataTypes.STRING

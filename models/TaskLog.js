@@ -7,7 +7,8 @@ module.exports = function(sequelize, DataTypes) {
     activity: DataTypes.INTEGER,
     date: DataTypes.DATE,
     user_id: DataTypes.STRING,
-    project_id: DataTypes.STRING
+    project_id: DataTypes.STRING,
+    task_id: DataTypes.STRING
   }, {
     classMethods: {}
   });
