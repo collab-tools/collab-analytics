@@ -29,13 +29,10 @@ module.exports = function (sequelize, DataTypes) {
         logInfo.id = uuid.v4();
         return this.create(logInfo);
       }
+    },
+    activityCode: {
+      CREATE: 'C',
+      DONE: 'D'
     }
   });
 };
-
-/*
- Activity
- ============
- C -> Created
- D -> Done
- */

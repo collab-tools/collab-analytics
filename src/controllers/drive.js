@@ -17,7 +17,7 @@ export function pullRevisions(googleConfig, projectId, refreshToken) {
   const oauthClient = new OAuth2(...googleConfig);
   oauthClient.setCredentials({ refresh_token: refreshToken });
 
-  let payload = {};
+  const payload = {};
 
   const retrieveRevisions = (files) => {
     payload.files = files;
@@ -135,7 +135,7 @@ export function pullDrive(googleConfig, projectId, rootFolder, refreshToken) {
   const processFilesIntoDB = () => {
     files.forEach((file) => {
       const fileWrapper = {
-        activity: 'C',
+        activity: models['drive-log'].activityCode.CREATE,
         fileUUID: file.id,
         fileName: file.name,
         fileMIME: file.mimeType,
