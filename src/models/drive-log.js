@@ -1,4 +1,5 @@
 'use strict';
+const uuid = require('node-uuid');
 
 module.exports = function (sequelize, DataTypes) {
   return sequelize.define('drive_log', {
@@ -34,6 +35,10 @@ module.exports = function (sequelize, DataTypes) {
           where,
           attributes: ['fileUUID', 'fileName', 'fileMIME', 'date', 'userId', 'projectId', 'id']
         });
+      },
+      createLog(logInfo) {
+        logInfo.id = uuid.v4();
+        return this.create(logInfo);
       }
     }
   });
