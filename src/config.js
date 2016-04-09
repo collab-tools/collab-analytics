@@ -1,12 +1,14 @@
+const _ = require('lodash');
+
 /* DB Storage */
-var dbConfig = {};
+let dbConfig = {};
 
 /**
  * Set the database configuration information for internal usage.
- * @param {object} dbConfig (dbName, dbUsername, dbPassword, dbConfig)
+ * @param {object} config (dbName, dbUsername, dbPassword, dbConfig)
  */
-export function setConfig(dbConfig) {
-  if(!_.isEmpty(dbConfig)) this.dbConfig = dbConfig;
+export function setConfig(config) {
+  if (!_.isEmpty(config)) dbConfig = config;
 }
 
 /**
