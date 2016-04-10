@@ -1,9 +1,9 @@
 'use strict';
 
 const google = require('googleapis');
+const Promise = require('bluebird');
 const models = require('../models');
 
-const FOLDER_MIME = 'application/vnd.google-apps.folder';
 /**
  * Pulls revision histories from Google Drive API and store
  * into logging database.
@@ -109,6 +109,7 @@ export function pullDrive(googleConfig, projectId, rootFolder, refreshToken) {
   let files = [];
 
   const recTraverseFolder = (folder) => {
+    const FOLDER_MIME = 'application/vnd.google-apps.folder';
     const drive = google.drive({ version: 'v3', auth: oauthClient });
     const options = {
       corpus: 'user',
