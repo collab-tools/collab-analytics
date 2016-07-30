@@ -2,7 +2,7 @@
 
 const google = require('googleapis');
 const Promise = require('bluebird');
-const models = require('../models');
+const models = require('../model-manager');
 
 /**
  * Pulls revision histories from Google Drive API and store
@@ -31,6 +31,7 @@ export function pullRevisions(googleConfig, projectId, refreshToken) {
 
     let start = 0;
     const stop = payload.files.length;
+
     return repeat(again => {
       if (start < stop) {
         const options = {
@@ -97,6 +98,7 @@ export function pullRevisions(googleConfig, projectId, refreshToken) {
 /**
  * Pulls files creation and deletion logs from Google Drive API
  * and store into logging database.
+ * @param {String} googleConfig
  * @param {String} projectId
  * @param {String} rootFolder
  * @param {String} refreshToken

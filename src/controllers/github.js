@@ -1,6 +1,7 @@
 'use strict';
 
-const models = require('../models');
+const octoGenerator = require('octokat');
+const models = require('../model-manager');
 
 /**
  * Pulls commit entries from GitHub and update local logging
@@ -15,7 +16,7 @@ export function pullCommits(projectId, repoOwner, repoName, accessToken) {
   // Access GitHub with user's token and retrieve relevant statistics
   // Setup GitHub wrapper to retrieve information from GitHub
   const octoConfig = { accessToken };
-  const octo = require('octokat')(octoConfig);
+  const octo = octoGenerator(octoConfig);
   const repo = octo.repos(repoOwner, repoName);
 
   const logCommits = (commits) => {
@@ -63,7 +64,7 @@ export function pullReleases(projectId, repoOwner, repoName, accessToken) {
   // Access GitHub with user's token and retrieve relevant statistics
   // Setup GitHub wrapper to retrieve information from GitHub
   const octoConfig = { accessToken };
-  const octo = require('octokat')(octoConfig);
+  const octo = octoGenerator(octoConfig);
   const repo = octo.repos(repoOwner, repoName);
 
   const logReleases = (releases) => {

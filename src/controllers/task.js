@@ -1,6 +1,6 @@
 'use strict';
 
-const models = require('../models');
+const models = require('../model-manager');
 
 export const ACTIVITY_CREATE = 'C';
 export const ACTIVITY_DONE = 'D';
