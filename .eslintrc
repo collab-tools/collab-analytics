@@ -7,7 +7,7 @@
     "no-param-reassign": 0,
     "new-cap": [2, {"capIsNewExceptions": ["express.Router"]}],
     "arrow-body-style": 0,
-    "strict": 0
+    "strict": 2
   },
   "env": {
     "mocha": true,

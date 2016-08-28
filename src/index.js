@@ -1,6 +1,4 @@
-'use strict';
-
- /**
+/**
  * Library initialization that requires sequelize mySQL information
  * and entry point for external references.
  * @param  {object} dbConfig (dbName, dbUsername, dbPassword, dbConfig)
