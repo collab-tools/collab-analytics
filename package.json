@@ -2,7 +2,7 @@
   "name": "collab-analytics",
   "version": "1.0.0",
   "description": "Analytics library for logging / data pulling in Collab.",
-  "main": "src/",
+  "main": "lib/",
   "scripts": {
     "compile": "babel --presets es2015 -d lib/ src/",
     "test": "npm run compile && mocha --compilers js:babel-core/register",
