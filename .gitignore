@@ -3,6 +3,9 @@ logs
 *.log
 npm-debug.log*
 
+# Wallaby Test Runner
+wallaby.js
+
 # Runtime data
 pids
 *.pid
@@ -81,4 +84,3 @@ atlassian-ide-plugin.xml
 com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
-
