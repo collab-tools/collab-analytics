@@ -1,17 +1,17 @@
+import manager from './model-manager';
+import drive from './controllers/drive';
+import github from './controllers/github';
+import milestone from './controllers/milestone';
+import task from './controllers/task';
 /**
  * Library initialization that requires sequelize mySQL information
  * and entry point for external references.
- * @param  {object} dbConfig (dbName, dbUsername, dbPassword, dbConfig)
+ * @param  {object} dbApp    object containing app database information
+ * @param  {object} dbLog    object containing logging database information
  * @return {object}          object containing logging controllers
  */
-export default function (dbConfig) {
-  /* eslint-disable global-require */
-  require('./model-manager')(dbConfig);
-  return {
-    drive: require('./controllers/drive'),
-    github: require('./controllers/github'),
-    milestone: require('./controllers/milestone'),
-    task: require('./controllers/task')
-  };
-  /* eslint-enable global-require */
+export default function (dbApp, dbLog) {
+  manager.initApp(dbApp);
+  manager.initLogging(dbLog);
+  return { drive, github, milestone, task };
 }

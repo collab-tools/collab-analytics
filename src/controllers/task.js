@@ -1,13 +1,14 @@
-'use strict';
-
-const models = require('../model-manager');
+import models from '../model-manager';
 
 export const ACTIVITY_CREATE = 'C';
 export const ACTIVITY_DONE = 'D';
+export const ACTIVITY_UPDATE = 'U';
+export const ACTIVITY_ASSIGNED = 'A';
+export const ACTIVITY_DELETED = 'X';
 
 /**
  * Logs the datestamp of a status change made by a user to a task in a project.
- * @param  {object} taskData (activity [C|D], datestamp, projectID, userID, taskID)
+ * @param  {object} taskData (activity [C|D|U|A], datestamp, projectID, userID, taskID)
  * @return {object}          boolean status and error message if any
  */
 export function logTaskActivity(taskData) {
@@ -24,5 +25,5 @@ export function logTaskActivity(taskData) {
     return { success: true };
   };
 
-  return models['task-log'].createLog(payloadFilter).then(response);
+  return models.logging.task_log.createLog(payloadFilter).then(response);
 }

@@ -1,5 +1,3 @@
-'use strict';
-
 describe('Pulling Revisions from Google APIs', () => {
   it('should return return stub revisions from mock API', () => {
 

@@ -1,5 +1,3 @@
-'use strict';
-
 describe('Pulling Commits from Github APIs', () => {
   it('should return return stub commits from mock API', () => {
 

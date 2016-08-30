@@ -1,7 +1,5 @@
-'use strict';
-
-const octoGenerator = require('octokat');
-const models = require('../model-manager');
+import octoGenerator from 'octokat';
+import models from '../model-manager';
 
 /**
  * Pulls commit entries from GitHub and update local logging
@@ -31,7 +29,7 @@ export function pullCommits(projectId, repoOwner, repoName, accessToken) {
         githubLogin: commit.committer.login,
         projectId
       };
-      return models['commit-log'].createLog(payload);
+      return models.logging.commit_log.createLog(payload);
     });
   };
 
@@ -77,7 +75,7 @@ export function pullReleases(projectId, repoOwner, repoName, accessToken) {
         body: release.body,
         projectId
       };
-      return models['release-log'].createLog(payload);
+      return models.logging.release_log.createLog(payload);
     });
   };
 
@@ -116,7 +114,7 @@ export function logCommit(projectId, commit) {
     return { success: false, error };
   };
 
-  return models['commit-log'].createLog(filteredCommit)
+  return models.logging.commit_log.createLog(filteredCommit)
       .then(response)
       .then(catchError);
 }
@@ -144,7 +142,7 @@ export function logRelease(projectId, release) {
     return { success: false, error };
   };
 
-  return models['release-log'].createLog(filteredCommit)
+  return models.logging.release_log.createLog(filteredCommit)
       .then(response)
       .then(catchError);
 }

@@ -1,8 +1,6 @@
-'use strict';
-
-const google = require('googleapis');
-const Promise = require('bluebird');
-const models = require('../model-manager');
+import google from 'googleapis';
+import Promise from 'bluebird';
+import models from '../model-manager';
 
 /**
  * Pulls revision histories from Google Drive API and store
@@ -26,13 +24,18 @@ export function pullRevisions(googleConfig, projectId, refreshToken) {
     const drive = google.drive({ version: 'v3', auth: oauthClient });
     const Continue = {};
     const again = () => Continue;
+
+    /* eslint-disable no-mixed-operators */
     const repeat = fn => Promise.try(fn, again)
         .then(val => val === Continue && repeat(fn) || val);
+    /* eslint-enable */
 
     let start = 0;
     const stop = payload.files.length;
 
+    /* eslint-disable no-shadow, consistent-return */
     return repeat(again => {
+    /* eslint-enable */
       if (start < stop) {
         const options = {
           fileId: payload.files[start].id,
@@ -88,7 +91,7 @@ export function pullRevisions(googleConfig, projectId, refreshToken) {
     return { success: false, message: err };
   };
 
-  return models['revision-log'].getUniqueFiles(projectId)
+  return models.revision_log.getUniqueFiles(projectId)
       .then(retrieveRevisions)
       .then(processFilesIntoDB)
       .then(response)
@@ -138,7 +141,7 @@ export function pullDrive(googleConfig, projectId, rootFolder, refreshToken) {
   const processFilesIntoDB = () => {
     files.forEach((file) => {
       const fileWrapper = {
-        activity: models['drive-log'].activityCode.CREATE,
+        activity: models.drive_log.activityCode.CREATE,
         fileUUID: file.id,
         fileName: file.name,
         fileMIME: file.mimeType,
@@ -146,7 +149,7 @@ export function pullDrive(googleConfig, projectId, rootFolder, refreshToken) {
         googleId: file.owners[0],
         projectId
       };
-      models['drive-log'].createLog(fileWrapper);
+      models.drive_log.createLog(fileWrapper);
     });
   };
 
