@@ -17,9 +17,9 @@ export default function (storage) {
     const payloadFilter = {
       activity: taskData.activity,
       date: taskData.date,
-      userId: taskData.userID,
-      projectId: taskData.projectID,
-      taskId: taskData.taskID
+      userId: taskData.userId,
+      projectId: taskData.projectId,
+      taskId: taskData.taskId
     };
 
     const response = (log) => {
