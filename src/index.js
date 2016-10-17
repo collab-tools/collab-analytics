@@ -1,4 +1,4 @@
-import Storage from './storage';
+import Storage from './data/storage';
 import drive from './controllers/drive';
 import github from './controllers/github';
 import milestone from './controllers/milestone';
