@@ -9,16 +9,18 @@ export default function (storage) {
 
   /**
    * Stores the datestamp of the user creating a new milestone in the project.
-   * @param  {object} milestoneData (datestamp, projectID, userID, milestoneID)
-   * @return {object}               boolean status and error message if any
+   * @param  {string} activity  activity representation defined by constants
+   * @param  {string} date      date of the activity
+   * @param  {string} userId    id of user performing activity
+   * @param  {object} milestone (..projectId, milestoneId)
+   * @return {object}           boolean status and error message if any
    */
-  function logMilestoneActivity(milestoneData) {
+  function logMilestoneActivity(activity, date, milestone) {
     const payloadFilter = {
-      activity: milestoneData.activity,
-      date: milestoneData.date,
-      userId: milestoneData.userId,
-      projectId: milestoneData.projectId,
-      milestoneId: milestoneData.milestoneId
+      activity,
+      date,
+      projectId: milestone.projectId,
+      milestoneId: milestone.milestoneId
     };
 
     const response = (log) => {
@@ -26,7 +28,14 @@ export default function (storage) {
       return { success: true };
     };
 
-    return storage.log.milestone_log.createLog(payloadFilter).then(response);
+    const errorHandler = (error) => {
+      console.error(error);
+      return { success: false, message: error };
+    };
+
+    return storage.log.milestone_log.createLog(payloadFilter)
+      .then(response)
+      .catch(errorHandler);
   }
 
   return {

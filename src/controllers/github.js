@@ -1,4 +1,4 @@
-import octoGenerator from 'octokat';
+import github from './../data/github';
 
 export default function (storage) {
   /**
@@ -13,24 +13,23 @@ export default function (storage) {
   function pullCommits(projectId, repoOwner, repoName, accessToken) {
     // Access GitHub with user's token and retrieve relevant statistics
     // Setup GitHub wrapper to retrieve information from GitHub
-    const octoConfig = { accessToken };
-    const octo = octoGenerator(octoConfig);
-    const repo = octo.repos(repoOwner, repoName);
-
+    github.authenticate({
+      type: 'token',
+      token: accessToken
+    });
     const logCommits = (commits) => {
-      console.log(commits);
+      const insertions = [];
       commits.forEach((commit) => {
         const payload = {
           message: commit.commit.message,
           sha: commit.sha,
           date: commit.commit.committer.date,
-          additions: commit.stats.additions,
-          deletions: commit.stats.deletions,
           githubLogin: commit.committer.login,
           projectId
         };
-        return storage.log.commit_log.createLog(payload);
+        insertions.push(storage.log.commit_log.createLog(payload));
       });
+      return Promise.all(insertions);
     };
 
     const response = () => {
@@ -39,15 +38,14 @@ export default function (storage) {
 
     const catchError = (error) => {
       console.error(error);
-      return { success: false, error };
+      return { success: false, message: error };
     };
 
-    return repo.commits.fetch()
+    return github.repos.getCommits({ owner: repoOwner, repo: repoName })
       .then(logCommits)
       .then(response)
       .catch(catchError);
   }
-
 
   /**
    * Pulls commit entries from GitHub and update local logging
@@ -61,32 +59,39 @@ export default function (storage) {
   function pullReleases(projectId, repoOwner, repoName, accessToken) {
     // Access GitHub with user's token and retrieve relevant statistics
     // Setup GitHub wrapper to retrieve information from GitHub
-    const octoConfig = { accessToken };
-    const octo = octoGenerator(octoConfig);
-    const repo = octo.repos(repoOwner, repoName);
+    github.authenticate({
+      type: 'token',
+      token: accessToken
+    });
 
     const logReleases = (releases) => {
-      console.log(releases);
+      const insertions = [];
       releases.forEach((release) => {
         const payload = {
           date: release.published_at,
-          assets: release.assets,
+          assets: JSON.stringify(release.assets),
           tagName: release.tag_name,
           body: release.body,
           projectId
         };
-        return storage.log.release_log.createLog(payload);
+        insertions.push(storage.log.release_log.upsertLog(payload));
       });
+      return Promise.all(insertions);
     };
 
-    const catchError = (error) => {
+    const response = () => {
+      return { success: true };
+    };
+
+    const errorHandler = (error) => {
       console.error(error);
-      return { success: false, error };
+      return { success: false, message: error };
     };
 
-    return repo.releases.fetch()
+    return github.repos.getReleases({ owner: repoOwner, repo: repoName })
       .then(logReleases)
-      .catch(catchError);
+      .then(response)
+      .catch(errorHandler);
   }
 
   /**
@@ -99,8 +104,6 @@ export default function (storage) {
       message: commit.commit.message,
       sha: commit.sha,
       date: commit.commit.committer.date,
-      additions: commit.stats.additions,
-      deletions: commit.stats.deletions,
       githubLogin: commit.committer.login,
       projectId
     };
@@ -109,14 +112,14 @@ export default function (storage) {
       return { success: true };
     };
 
-    const catchError = (error) => {
+    const errorHandler = (error) => {
       console.error(error);
-      return { success: false, error };
+      return { success: false, message: error };
     };
 
     return storage.log.commit_log.createLog(filteredCommit)
       .then(response)
-      .then(catchError);
+      .catch(errorHandler);
   }
 
   /**
@@ -127,7 +130,7 @@ export default function (storage) {
   function logRelease(projectId, release) {
     const filteredCommit = {
       date: release.published_at,
-      assets: release.assets,
+      assets: JSON.stringify(release.assets),
       tagName: release.tag_name,
       body: release.body,
       projectId
@@ -137,14 +140,14 @@ export default function (storage) {
       return { success: true };
     };
 
-    const catchError = (error) => {
+    const errorHandler = (error) => {
       console.error(error);
-      return { success: false, error };
+      return { success: false, message: error };
     };
 
     return storage.log.release_log.createLog(filteredCommit)
       .then(response)
-      .then(catchError);
+      .catch(errorHandler);
   }
 
   return {
