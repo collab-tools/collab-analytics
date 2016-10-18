@@ -10,20 +10,20 @@ export default function (storage) {
   };
 
   /**
-   * Pulls revision histories from Google Drive API and store
-   * into logging database.
+   * Pulls file changes from Google Drive API and store into logging database.
    * @pre   Files must be pulled first before running this function as it is dependent.
-   * @param {object} googleConfig contains client_id, client_secret, redirect_URL
-   * @param {String} projectId
-   * @param {String} refreshToken
+   * @param {object} googleConfig   contains client_id, client_secret, redirect_URL
+   * @param {string} projectId      id of the project related to the folder
+   * @param {string} refreshToken   refresh token for accessing drive
    */
-  function pullRevisions(googleConfig, projectId, refreshToken) {
+  function pullChanges(googleConfig, projectId, refreshToken) {
     const OAuth2 = google.auth.OAuth2;
     const oauthClient = new OAuth2(googleConfig.client_id, googleConfig.client_secret);
     oauthClient.setCredentials({ refresh_token: refreshToken });
 
     const payload = {};
 
+    // Pull file revisions and process them as changes
     const retrieveRevisions = (files) => {
       payload.files = files;
       payload.revisions = [];
@@ -55,30 +55,32 @@ export default function (storage) {
       });
     };
 
-    const processFilesIntoDB = () => {
+    const processChanges = () => {
       const processFile = (fileIndex) => {
         const fileId = payload.files[fileIndex].fileUUID;
         const name = payload.files[fileIndex].fileName;
         const mime = payload.files[fileIndex].fileMIME;
-
+        const insertion = [];
         if (payload.revisions[fileIndex]) {
           const kind = payload.revisions[fileIndex].kind;
           const revisions = payload.revisions[fileIndex].revisions;
+
           if (kind === 'drive#revisionList' && revisions.length > 0) {
             revisions.forEach((revision) => {
-              const revisionWrapper = {
+              const changeWrapper = {
+                activity: constants.FILE_MODIFIED,
                 fileUUID: fileId,
                 fileName: name,
                 fileMIME: mime,
-                revisionUUID: revision.id,
                 date: revision.modifiedTime,
                 email: revision.lastModifyingUser.emailAddress,
                 projectId
               };
-              storage.log.revision_log.createLog(revisionWrapper);
+              insertion.push(storage.log.file_log.createLog(changeWrapper));
             });
           }
         }
+        return Promise.all(insertion);
       };
 
       const dbPromises = [];
@@ -99,9 +101,9 @@ export default function (storage) {
       return { success: false, message: error };
     };
 
-    return storage.log.drive_log.getUniqueFiles(projectId)
+    return storage.log.file_log.getUniqueFiles(projectId)
       .then(retrieveRevisions)
-      .then(processFilesIntoDB)
+      .then(processChanges)
       .then(response)
       .catch(errorHandler);
   }
@@ -109,12 +111,12 @@ export default function (storage) {
   /**
    * Pulls files creation and deletion logs from Google Drive API
    * and store into logging database.
-   * @param {String} googleConfig contains client_id, client_secret, redirect_URL
-   * @param {String} projectId
-   * @param {String} rootFolder
-   * @param {String} refreshToken
+   * @param {string} googleConfig   contains client_id, client_secret, redirect_URL
+   * @param {string} projectId      id of the project related to the folder
+   * @param {string} rootFolder     folder id that serves as the root
+   * @param {string} refreshToken   refresh token for accessing drive
    */
-  function pullDrive(googleConfig, projectId, rootFolder, refreshToken) {
+  function pullFiles(googleConfig, projectId, rootFolder, refreshToken) {
     const OAuth2 = google.auth.OAuth2;
     const oauthClient = new OAuth2(googleConfig.client_id, googleConfig.client_secret);
     oauthClient.setCredentials({ refresh_token: refreshToken });
@@ -156,7 +158,7 @@ export default function (storage) {
           email: file.owners[0].emailAddress,
           projectId
         };
-        insertions.push(storage.log.drive_log.createLog(fileWrapper));
+        insertions.push(storage.log.file_log.createLog(fileWrapper));
       });
 
       return Promise.all(insertions);
@@ -178,52 +180,36 @@ export default function (storage) {
   }
 
   /**
-   * Logs the given revision related to a file to the logging database
-   * @param fileUUID  {string} file id that the revision is linked to
-   * @param projectId {string} project id that the revision is linked to
-   * @param revision  {object} revision resource (refer to GAPIS)
-   */
-  function logRevision(fileUUID, projectId, revision) {
-    const filteredRevision = {
-      fileUUID,
-      fileName: revision.originalFilename,
-      fileMIME: revision.mimeType,
-      revisionUUID: revision.id,
-      date: revision.modifiedTime,
-      email: revision.lastModifyingUser.emailAddress,
-      projectId,
-    };
-
-    const response = () => {
-      return { success: true };
-    };
-
-    const errorHandler = (error) => {
-      console.error(error);
-      return { success: false, message: error };
-    };
-
-    return storage.log.revision_log.createLog(filteredRevision)
-      .then(response)
-      .catch(errorHandler);
-  }
-
-  /**
    * Logs the given file related to a project to the logging database.
-   * @param  {string} activity  activity representation defined by constants
-   * @param projectId {string} project id that the file is linked to
-   * @param file     {object} file resource (refer to GAPIS)
+   * @param {string} activity   activity representation defined by constants
+   * @param {string} date       date of the activity
+   * @param {string} email      email of activity creator
+   * @param {string} projectId  project id that the file is linked to
+   * @param {object} file       object that contains file metadata
    */
-  function logDrive(activity, projectId, file) {
-    const filteredDrive = {
-      activity,
-      fileUUID: file.id,
-      fileName: file.name,
-      fileMIME: file.mimeType,
-      fileExtension: file.fileExtension,
-      date: file.createdTime,
-      email: file.owners[0].emailAddress,
-      projectId
+  function logFileActivity(activity, date, email, projectId, file) {
+    const fetchProjectIdentifier = () => {
+      if (projectId === null) {
+        return storage.log.file_log.getFile(file.id)
+          .then((instance) => {
+            projectId = instance.projectId;
+            return Promise.resolve();
+          });
+      }
+      return Promise.resolve();
+    };
+
+    const preparePayload = () => {
+      return {
+        activity,
+        fileUUID: file.id,
+        fileName: file.name,
+        fileMIME: file.mimeType,
+        fileExtension: file.fileExtension,
+        date,
+        email,
+        projectId
+      };
     };
 
     const response = () => {
@@ -235,16 +221,17 @@ export default function (storage) {
       return { success: false, message: error };
     };
 
-    return storage.log.drive_log.upsertLog(filteredDrive)
+    return fetchProjectIdentifier()
+      .then(preparePayload)
+      .then(storage.log.file_log.upsertLog)
       .then(response)
       .catch(errorHandler);
   }
 
   return {
-    pullRevisions,
-    pullDrive,
-    logRevision,
-    logDrive,
+    pullChanges,
+    pullFiles,
+    logFileActivity,
     constants
   };
 }

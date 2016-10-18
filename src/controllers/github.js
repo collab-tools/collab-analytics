@@ -4,10 +4,10 @@ export default function (storage) {
   /**
    * Pulls commit entries from GitHub and update local logging
    * database as per requirement.
-   * @param  {String} projectId   the id of the project linked to the repo
-   * @param  {String} repoOwner   owner handle of the GitHub repo
-   * @param  {String} repoName    name of the GitHub repo
-   * @param  {String} accessToken (optional) used to access private repo
+   * @param  {string} projectId   the id of the project linked to the repo
+   * @param  {string} repoOwner   owner handle of the GitHub repo
+   * @param  {string} repoName    name of the GitHub repo
+   * @param  {string} accessToken (optional) used to access private repo
    * @return {object}             boolean status and error message if any
    */
   function pullCommits(projectId, repoOwner, repoName, accessToken) {
@@ -50,10 +50,10 @@ export default function (storage) {
   /**
    * Pulls commit entries from GitHub and update local logging
    * database as per requirement.
-   * @param  {String} projectId   the id of the project linked to the repo
-   * @param  {String} repoOwner   owner handle of the GitHub repo
-   * @param  {String} repoName    name of the GitHub repo
-   * @param  {String} accessToken (optional) used to access private repo
+   * @param  {string} projectId   the id of the project linked to the repo
+   * @param  {string} repoOwner   owner handle of the GitHub repo
+   * @param  {string} repoName    name of the GitHub repo
+   * @param  {string} accessToken (optional) used to access private repo
    * @return {object}             boolean status and error message if any
    */
   function pullReleases(projectId, repoOwner, repoName, accessToken) {
@@ -96,8 +96,8 @@ export default function (storage) {
 
   /**
    * Logs the given commit related to a project/repo to the logging database.
-   * @param projectId {String} project id that the commit is linked to
-   * @param commit    {object} github commit object or same format
+   * @param {string} projectId  project id that the commit is linked to
+   * @param {object} commit     github commit object or same format
    */
   function logCommit(projectId, commit) {
     const filteredCommit = {
@@ -124,8 +124,8 @@ export default function (storage) {
 
   /**
    * Logs the given release related to a project/repo to the logging database.
-   * @param projectId {String} project id that the release is linked to
-   * @param release   {object} github release object or same format
+   * @param {string} projectId  project id that the release is linked to
+   * @param {object} release    github release object or same format
    */
   function logRelease(projectId, release) {
     const filteredCommit = {

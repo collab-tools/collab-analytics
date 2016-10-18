@@ -13,7 +13,7 @@ export default function (storage) {
    * @param  {string} activity  activity representation defined by constants
    * @param  {string} date      date of the activity
    * @param  {string} userId    id of user performing activity
-   * @param  {object} task      (..milestoneId, projectId, taskId)
+   * @param  {object} task      (..milestoneId, projectId, id)
    * @return {object}           boolean status and error message if any
    */
   function logTaskActivity(activity, date, userId, task) {
@@ -23,7 +23,7 @@ export default function (storage) {
       userId,
       milestoneId: task.milestoneId,
       projectId: task.projectId,
-      taskId: task.taskId
+      taskId: task.id
     };
 
     const response = (log) => {
