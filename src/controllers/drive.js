@@ -101,7 +101,7 @@ export default function (storage) {
       return { success: false, message: error };
     };
 
-    return storage.log.file_log.getUniqueFiles(projectId)
+    return storage.log.file_log.getFiles(projectId)
       .then(retrieveRevisions)
       .then(processChanges)
       .then(response)
