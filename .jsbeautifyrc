@@ -1,20 +1,31 @@
 {
-    "indent_size": 2,
-    "indent_char": " ",
-    "eol": "\n",
-    "indent_level": 0,
-    "indent_with_tabs": false,
-    "preserve_newlines": true,
-    "max_preserve_newlines": 10,
-    "jslint_happy": false,
+  "js": {
+    "allowed_file_extensions": [
+      "js",
+      "json",
+      "jshintrc",
+      "jsbeautifyrc",
+      "babelrc",
+      "eslintrc",
+      "es6"
+    ],
     "brace_style": "collapse-preserve-inline",
+    "break_chained_methods": false,
+    "end_with_newline": false,
+    "eol": "\n",
+    "eval_code": false,
+    "indent_char": " ",
+    "indent_level": 0,
+    "indent_size": 2,
+    "indent_with_tabs": false,
+    "jslint_happy": false,
     "keep_array_indentation": false,
     "keep_function_indentation": false,
+    "max_preserve_newlines": 10,
+    "preserve_newlines": true,
+    "space_after_anon_function": true,
     "space_before_conditional": true,
-    "break_chained_methods": false,
-    "eval_code": false,
     "unescape_strings": false,
-    "wrap_line_length": 0,
-    "end_with_newline": true,
-    "space_after_anon_function": true
+    "wrap_line_length": 0
+  }
 }
