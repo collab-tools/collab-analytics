@@ -4,7 +4,8 @@ export default function (storage) {
     ACTIVITY_CREATE: 'C',
     ACTIVITY_DONE: 'D',
     ACTIVITY_UPDATE: 'U',
-    ACTIVITY_DELETE: 'X'
+    ACTIVITY_DELETE: 'X',
+    ACTIVITY_TASK_ASSIGNED: 'A'
   };
 
   /**
@@ -15,12 +16,13 @@ export default function (storage) {
    * @param  {object} milestone (..projectId, id)
    * @return {object}           boolean status and error message if any
    */
-  function logMilestoneActivity(activity, date, milestone) {
+  function logMilestoneActivity(activity, date, userId, milestone) {
     const payloadFilter = {
       activity,
       date,
+      userId,
       projectId: milestone.projectId,
-      milestoneId: milestone.id
+      milestoneId: milestone.id,
     };
 
     const response = (log) => {
