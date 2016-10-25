@@ -23,8 +23,8 @@ export default function (storage) {
         const payload = {
           message: commit.commit.message,
           sha: commit.sha,
-          date: commit.commit.committer.date,
-          githubLogin: commit.committer.login,
+          date: commit.commit.author.date,
+          githubLogin: commit.author.login,
           projectId
         };
         insertions.push(storage.log.commit_log.createLog(payload));
@@ -103,8 +103,8 @@ export default function (storage) {
     const filteredCommit = {
       message: commit.commit.message,
       sha: commit.sha,
-      date: commit.commit.committer.date,
-      githubLogin: commit.committer.login,
+      date: commit.commit.author.date,
+      githubLogin: commit.author.login,
       projectId
     };
 
