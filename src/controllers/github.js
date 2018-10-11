@@ -21,10 +21,10 @@ export default function (storage) {
       const insertions = [];
       commits.forEach((commit) => {
         const payload = {
-          message: commit.commit.message,
+          message: commit.commit.message.replace(/[\u0250-\ue007]/g, ''),
           sha: commit.sha,
           date: commit.commit.author.date,
-          githubLogin: commit.author.login,
+          githubLogin: commit.author != null ? commit.author.login : '',
           projectId
         };
         insertions.push(storage.log.commit_log.createLog(payload));
